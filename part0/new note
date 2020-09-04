@@ -1,0 +1,32 @@
+title new note
+
+actor User
+User->Browser: The user writes something into the text field
+User->Browser: The user clicks the submit button
+
+note over Browser:
+The browser sends the user input to the server 
+end note
+
+Browser->Server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
+
+note over Server:
+The server asks the browser to do a new HTTP GET
+request to the address defined in the header's Location 
+end note
+
+Server-->Browser: The server responds with HTTP status code 302.
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+Server-->Browser: HTML-code
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+Server-->Browser: main.css
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+Server-->Browser: main.js
+
+note over Browser:
+browser starts executing js-code
+that requests JSON data from server 
+end note
+
+Browser->Server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+Server-->Browser: [ the raw data of the notes (data.json) ]

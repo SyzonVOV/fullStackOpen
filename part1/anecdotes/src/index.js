@@ -24,10 +24,6 @@ const App = (props) => {
     setAnecdotes(newAnec);
   };
 
-  const findBest = () => {
-
-  };
-
   return (
     <>
       <div id="anecdote">

@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from './Button'
 
 const NewPerson = ({addName, newName, newNumber, handleNameChange, handleNumberChange}) => {
 
@@ -12,7 +13,7 @@ const NewPerson = ({addName, newName, newNumber, handleNameChange, handleNumberC
           number: <input value={newNumber} onChange={handleNumberChange}/>
         </div>
         <div>
-          <button type="submit">add</button>
+          <Button type="submit" text="add"/>
         </div>
       </form>
   </>

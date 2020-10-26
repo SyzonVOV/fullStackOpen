@@ -1,71 +1,176 @@
-import React, {useState, useEffect} from 'react';
-import axios from 'axios';
-import Search from './components/Search'
-import NewPerson from './components/NewPerson'
-import Person from './components/Person'
+import React, { useState, useEffect } from "react";
+import Search from "./components/Search";
+import NewPerson from "./components/NewPerson";
+import Notification from "./components/Notification";
+import Person from "./components/Person";
+import apiService from "./services/notes";
 
 const App = () => {
-  const [ persons, setPersons ] = useState([]) 
-  const [ newName, setNewName ] = useState('')
-  const [ newNumber, setNewNumber ] = useState('')
-  const [ newFilter, setNewFilter ] = useState('')
+  const [persons, setPersons] = useState([]);
+  const [newName, setNewName] = useState("");
+  const [newNumber, setNewNumber] = useState("");
+  const [newFilter, setNewFilter] = useState("");
+  const [message, setMessage] = useState(null);
 
   const hook = () => {
-    axios
+    apiService.getAll().then((persons) => {
+      setPersons(persons);
+    });
+    // 13.10.2020
+    /*     axios
       .get('http://localhost:3001/persons')
       .then(response => {
         setPersons(response.data)
       })
+ */
   };
-  
+
   useEffect(hook, []);
 
   const addName = (event) => {
-    let uniqueName = persons.some(person => person.name === newName);
-    if (uniqueName) {
-      alert(`${newName} is already added to phonebook`)
+    event.preventDefault();
+    const updatePersonExist = persons.find((person) => person.name === newName);
+    if (updatePersonExist) {
+      if (
+        window.confirm(
+          `${updatePersonExist.name} is already added to phonebook, replace the old number with new one?`
+        )
+      ) {
+        const nameObject = {
+          ...updatePersonExist,
+          number: newNumber,
+        };
+        apiService
+          .update(nameObject.id, nameObject)
+          .then((response) => {
+            setPersons(
+              persons.map((person) =>
+                person.id !== updatePersonExist.id ? person : response.data
+              )
+            );
+          })
+          .catch((error) => {
+            createMessage(
+              {
+                event: 'error',
+                message: `Information of ${updatePersonExist.name} has been removed from server`,
+              });
+            setNewName("");
+            setNewNumber("");
+            setPersons(
+              persons.filter((person) => {
+                return !(person.id === updatePersonExist.id);
+              })
+            );
+          });
+      }
     } else {
-      event.preventDefault()  
       const nameObject = {
         name: newName.trim(),
-        id: persons.length + 1,
-        number: newNumber
-      }
-      setPersons(persons.concat(nameObject))
-      setNewName('');
-      setNewNumber('');  
+        number: newNumber,
+      };
+      apiService
+        .create(nameObject)
+        .then((person) => {
+          setPersons(persons.concat(person));
+          createMessage(
+            {
+              event: 'added',
+              message: `Added ${person.name}`
+            });
+        });
+      setNewName("");
+      setNewNumber("");
     }
-   }
-    
-    const handleNameChange = (event) => {
-      setNewName(event.target.value)
-    }
+  };
 
-    const handleNumberChange = (event) => {
-      setNewNumber(event.target.value)
-    }
+  const createMessage = (message) => {
+    setMessage(message);
+    setTimeout(() => {
+      setMessage(null)
+    }, 2500)  };
 
-    const handleFilterChange = (event) => {
-      setNewFilter(event.target.value)
-    }
+  const handleNameChange = (event) => {
+    setNewName(event.target.value);
+  };
 
-    const personsToShow = newFilter === ""
-    ? persons
-    : persons.filter(person => person.name.toLowerCase().includes(newFilter))
+  const handleNumberChange = (event) => {
+    setNewNumber(event.target.value);
+  };
+
+  const handleFilterChange = (event) => {
+    setNewFilter(event.target.value);
+  };
+
+  const handleDeletePerson = (idPerson, namePerson) => {
+    if (window.confirm(`Do you really want to delete ${namePerson}?`)) {
+      apiService
+        .deleteIt(idPerson)
+        .then((response) => {
+            setPersons(
+              persons.filter((person) => {
+                return !(person.id === idPerson);
+              })
+            );
+            createMessage(
+              {
+                event: 'deleted',
+                message: `The person's '${namePerson}' was deleted from server`,
+              });
+        })
+        .catch((error) => {
+          createMessage(
+            {
+              event: 'error',
+              message: `The person's '${namePerson}' has already been deleted from server`,
+            });
+          setPersons(
+            persons.filter((person) => {
+              return !(person.id === idPerson);
+            })
+          );
+        });
+    }
+  };
+
+  const personsToShow =
+    newFilter === ""
+      ? persons
+      : persons.filter((person) =>
+          person.name.toLowerCase().includes(newFilter)
+        );
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Search value={newFilter} handleFilterChange={handleFilterChange}/>
+      <Notification message={message} />
+      <Search value={newFilter} handleFilterChange={handleFilterChange} />
       <h2>Add a new person</h2>
-      <NewPerson addName={addName} 
-                  newName={newName} newNumber={newNumber}
-                  handleNameChange={handleNameChange}
-                  handleNumberChange={handleNumberChange}/>
+      <NewPerson
+        addName={addName}
+        newName={newName}
+        newNumber={newNumber}
+        handleNameChange={handleNameChange}
+        handleNumberChange={handleNumberChange}
+      />
       <h2>Numbers</h2>
-      {personsToShow.map(person => <Person key={person.id} name={person.name} number={person.number} />)}
+      <table>
+        <tbody>
+          {personsToShow.map((person) => (
+            <Person
+              key={person.id}
+              name={person.name}
+              id={person.id}
+              del={() => {
+                handleDeletePerson(person.id, person.name);
+              }}
+              number={person.number}
+            />
+          ))}
+        </tbody>
+      </table>
     </div>
-  )
-}
+  );
+};
 
 export default App;

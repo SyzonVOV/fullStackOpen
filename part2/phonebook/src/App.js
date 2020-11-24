@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import Search from "./components/Search";
-import NewPerson from "./components/NewPerson";
-import Notification from "./components/Notification";
-import Person from "./components/Person";
-import apiService from "./services/notes";
+import React, { useState, useEffect } from 'react';
+import Search from './components/Search';
+import NewPerson from './components/NewPerson';
+import Notification from './components/Notification';
+import Person from './components/Person';
+import apiService from './services/notes';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
-  const [newFilter, setNewFilter] = useState("");
+  const [newName, setNewName] = useState('');
+  const [newNumber, setNewNumber] = useState('');
+  const [newFilter, setNewFilter] = useState('');
   const [message, setMessage] = useState(null);
 
   const hook = () => {
@@ -33,7 +33,7 @@ const App = () => {
     if (updatePersonExist) {
       if (
         window.confirm(
-          `${updatePersonExist.name} is already added to phonebook, replace the old number with new one?`
+          `${updatePersonExist.name} is already added to phonebook, replace the old number with new one?`,
         )
       ) {
         const nameObject = {
@@ -43,25 +43,35 @@ const App = () => {
         apiService
           .update(nameObject.id, nameObject)
           .then((response) => {
-            setPersons(
-              persons.map((person) =>
-                person.id !== updatePersonExist.id ? person : response.data
-              )
-            );
-          })
-          .catch((error) => {
-            createMessage(
-              {
+            if (response.status === 204) {
+              createMessage({
                 event: 'error',
                 message: `Information of ${updatePersonExist.name} has been removed from server`,
               });
-            setNewName("");
-            setNewNumber("");
-            setPersons(
-              persons.filter((person) => {
-                return !(person.id === updatePersonExist.id);
-              })
-            );
+              setNewName('');
+              setNewNumber('');
+              setPersons(
+                persons.filter((person) => {
+                  return !(person.id === updatePersonExist.id);
+                }),
+              );
+            } else {
+              setPersons(
+                persons.map((person) =>
+                  person.id !== updatePersonExist.id ? person : response.data,
+                ),
+              );
+              setNewName('');
+              setNewNumber('');
+            }
+          })
+          .catch((error) => {
+            if (error.response.status === 400) {
+              createMessage({
+                event: 'error',
+                message: `${error.response.data.error}`,
+              });
+            }
           });
       }
     } else {
@@ -73,22 +83,28 @@ const App = () => {
         .create(nameObject)
         .then((person) => {
           setPersons(persons.concat(person));
-          createMessage(
-            {
-              event: 'added',
-              message: `Added ${person.name}`
-            });
+          createMessage({
+            event: 'added',
+            message: `Added ${person.name}`,
+          });
+        })
+        .catch((error) => {
+          createMessage({
+            event: 'error',
+            message: `${error.response.data.error}`,
+          });
         });
-      setNewName("");
-      setNewNumber("");
+      setNewName('');
+      setNewNumber('');
     }
   };
 
   const createMessage = (message) => {
     setMessage(message);
     setTimeout(() => {
-      setMessage(null)
-    }, 2500)  };
+      setMessage(null);
+    }, 5500);
+  };
 
   const handleNameChange = (event) => {
     setNewName(event.target.value);
@@ -107,37 +123,35 @@ const App = () => {
       apiService
         .deleteIt(idPerson)
         .then((response) => {
-            setPersons(
-              persons.filter((person) => {
-                return !(person.id === idPerson);
-              })
-            );
-            createMessage(
-              {
-                event: 'deleted',
-                message: `The person's '${namePerson}' was deleted from server`,
-              });
-        })
-        .catch((error) => {
-          createMessage(
-            {
-              event: 'error',
-              message: `The person's '${namePerson}' has already been deleted from server`,
-            });
           setPersons(
             persons.filter((person) => {
               return !(person.id === idPerson);
-            })
+            }),
+          );
+          createMessage({
+            event: 'deleted',
+            message: `The person's '${namePerson}' was deleted from server`,
+          });
+        })
+        .catch((error) => {
+          createMessage({
+            event: 'error',
+            message: `The person's '${namePerson}' has already been deleted from server`,
+          });
+          setPersons(
+            persons.filter((person) => {
+              return !(person.id === idPerson);
+            }),
           );
         });
     }
   };
 
   const personsToShow =
-    newFilter === ""
+    newFilter === ''
       ? persons
       : persons.filter((person) =>
-          person.name.toLowerCase().includes(newFilter)
+          person.name.toLowerCase().includes(newFilter),
         );
 
   return (
@@ -156,9 +170,10 @@ const App = () => {
       <h2>Numbers</h2>
       <table>
         <tbody>
-          {personsToShow.map((person) => (
+          {personsToShow.map((person, ind) => (
             <Person
               key={person.id}
+              ind={ind + 1}
               name={person.name}
               id={person.id}
               del={() => {

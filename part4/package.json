@@ -17,7 +17,8 @@
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
     "test2": "clear && jest --verbose",
     "test:sp": "jest -u -t=\"favorite blog\"",
-    "test:file": "clear && npm test -- tests/listAPI.test.js"
+    "test:file": "clear && npm test -- tests/listAPI.test.js",
+    "start:test": "cross-env NODE_ENV=test nodemon index.js"
   },
   "author": "",
   "license": "ISC",

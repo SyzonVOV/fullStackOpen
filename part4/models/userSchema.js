@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
+mongoose.set('returnOriginal', false);
 
 const userSchema = new mongoose.Schema({
   username: {

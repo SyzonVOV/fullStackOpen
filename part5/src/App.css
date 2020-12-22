@@ -1,0 +1,79 @@
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  padding-top: 5rem;
+  z-index: 1;
+}
+
+.modal-message {
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 60px 40px auto 40px;
+  width: 100%;
+}
+
+button {
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  padding: 0.5em 2em;
+  outline: none;
+  border-width: 2px 0;
+  border-style: solid none;
+  border-color: #fdbe33 #000 #d77206;
+  border-radius: 6px;
+  background: linear-gradient(#f3ae0f, #e38916) #e38916;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: linear-gradient(#f5ae00, #f59500) #f5ae00;
+}
+button:active {
+  background: linear-gradient(#f59500, #f5ae00) #f59500;
+}
+
+.bullet {
+  margin-left: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: li;
+}
+.bullet-li {
+  position: relative;
+  margin-bottom: 1.5em;
+  border: 3px solid #cadfcf;
+  padding: 0.6em;
+  border-radius: 4px;
+}
+.bullet-li:before {
+  position: absolute;
+  top: -0.7em;
+  padding-left: 0.4em;
+  padding-right: 0.4em;
+  font-size: 16px;
+  font-weight: bold;
+  color: #dcc24b;
+  background: #fefefe;
+  border-radius: 50%;
+  counter-increment: li;
+  content: counter(li);
+}
+
+.none {
+    all: initial;
+    display: block;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: 0;
+    margin-right: 0;
+}

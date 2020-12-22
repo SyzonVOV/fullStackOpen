@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const morgan = require('morgan');
 const mongoose = require('mongoose');
 require('express-async-errors');
 const logger = require('./utils/logger');
@@ -28,6 +29,15 @@ mongoose
 
 app.use(cors());
 app.use(express.json());
+
+morgan.token('data', function getData(req) {
+  return JSON.stringify(req.body);
+});
+
+app.use(
+  morgan(':method :url :status :res[content-length] - :response-time ms :data'),
+);
+
 app.use(middleware.tokenExtractor);
 
 app.get('/', (request, response) => {
@@ -37,6 +47,10 @@ app.get('/', (request, response) => {
 app.use('/api/login', loginRouter);
 app.use('/api/blogs', blogsRouter);
 app.use('/api/users', usersRouter);
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('./controllers/test');
+  app.use('/api/testing', testingRouter);
+}
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);

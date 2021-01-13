@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Switch,
-  Route,
-  Link,
-  Redirect,
-  useRouteMatch,
-  useHistory,
-} from 'react-router-dom';
+import { Switch, Route, Link, useRouteMatch } from 'react-router-dom';
 
 const Menu = () => {
   const padding = {
@@ -125,6 +118,18 @@ const CreateNew = props => {
   );
 };
 
+const Anecdote = ({ anecdote }) => {
+  return (
+    <div>
+      <h2>{anecdote.content}</h2>
+      <div>{anecdote.author}</div>
+      <div>
+        <strong>{anecdote.votes ? `votes: ${anecdote.votes}` : ''}</strong>
+      </div>
+    </div>
+  );
+};
+
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
     {
@@ -132,14 +137,14 @@ const App = () => {
       author: 'Jez Humble',
       info: 'https://martinfowler.com/bliki/FrequencyReducesDifficulty.html',
       votes: 0,
-      id: '1',
+      id: 1,
     },
     {
       content: 'Premature optimization is the root of all evil',
       author: 'Donald Knuth',
       info: 'http://wiki.c2.com/?PrematureOptimization',
-      votes: 0,
-      id: '2',
+      votes: 2,
+      id: 2,
     },
   ]);
 
@@ -163,13 +168,18 @@ const App = () => {
     setAnecdotes(anecdotes.map(a => (a.id === id ? voted : a)));
   };
 
+  const match = useRouteMatch('/anecdotes/:id');
+  const anecdote = match
+  ? anecdotes.find(anecdote => anecdote.id === Number(match.params.id))
+  : null;
+  
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
       <Switch>
         <Route path="/anecdotes/:id">
-          <AnecdoteList anecdotes={anecdotes} />
+          <Anecdote anecdote={anecdote} />
         </Route>
         <Route path="/create">
           <CreateNew addNew={addNew} />

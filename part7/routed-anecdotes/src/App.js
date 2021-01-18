@@ -79,7 +79,7 @@ const Footer = () => (
 const CreateNew = props => {
   const content = useField('content');
   const author = useField('author');
-  const info = useState('info');
+  const info = useField('info');
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -108,6 +108,15 @@ const CreateNew = props => {
           <input {...info} />
         </div>
         <button>create</button>
+        <button type="reset"
+          onClick={() => {
+            content.onChange();
+            author.onChange();
+            info.onChange();
+          }}
+        >
+          reset
+        </button>
       </form>
     </div>
   );
@@ -116,8 +125,8 @@ const CreateNew = props => {
 const Anecdote = ({ anecdote }) => {
   return (
     <div>
-      <h2>{anecdote.content}</h2>
-      <div>{anecdote.author}</div>
+      <h2>{anecdote?.content}</h2>
+      <div>{anecdote?.author}</div>
       <div>
         <strong>{anecdote.votes ? `votes: ${anecdote.votes}` : ''}</strong>
       </div>
@@ -149,8 +158,8 @@ const App = () => {
   console.log(`🚀 ~ file: App.js ~ line 154 ~ App ~ history`, history);
 
   const addNew = anecdote => {
-    anecdote.id = (Math.random() * 10000).toFixed(0);
-    setAnecdotes(anecdotes.concat(anecdote));
+    anecdote.id = +(Math.random() * 10000).toFixed(0);
+    setAnecdotes(anecdotes => anecdotes.concat(anecdote));
     history.push('/');
     setNotification(`a new anecdote "${anecdote.content}" created!`);
     setTimeout(() => {

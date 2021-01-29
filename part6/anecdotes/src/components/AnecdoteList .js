@@ -7,9 +7,7 @@ import { voteAnecThunk, setNotificationcThunk } from './../reducers/actions';
 const AnecdoteList = ({anecdotes, voteAnecThunk, setNotificationcThunk}) => {
   const [newFilter, setNewFilter] = React.useState('');
 
-  // const anecdotes = useSelector(state =>
-  //   lodash.orderBy(state.anecdotes, ['votes'], ['desc']),
-  // );
+
   // const dispatch = useDispatch();
 
   const voteHandel = anecdote => {

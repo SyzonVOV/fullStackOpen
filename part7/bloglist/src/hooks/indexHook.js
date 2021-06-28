@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types';
 
-export const useField = (name) => {
+export const useField = (name, type = 'text') => {
   const [value, setValue] = useState('')
 
   const onChange = (event) => {
@@ -10,6 +11,11 @@ export const useField = (name) => {
   return {
     name,
     value,
+    type,
     onChange
   }
 }
+
+useField.propTypes = {
+  name: PropTypes.string.isRequired,
+};

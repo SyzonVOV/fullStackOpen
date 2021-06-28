@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { ADD_BLOG, ADD_VOTE, HIDE_NOTIF, SHOW_NOTIF, INIT_BLOG, DEL_TIMER, INIT_TIMER } from './action-types';
+import { ADD_BLOG, ADD_VOTE, HIDE_NOTIF, SHOW_NOTIF, INIT_BLOG, DEL_TIMER, INIT_TIMER, SET_USER } from './action-types';
 
 // const anecdotesAtStart = [
 //   'If it hurts, do it more often',
@@ -61,7 +61,18 @@ const notificationReducer = (state = {message: null, timerID: null}, action) => 
   }
 };
 
+const userReducer = (state = {user: null}, action) => {
+  switch (action.type) {
+    case SET_USER:
+      return {...state, user: action.payload};
+
+    default:
+      return state;
+  }
+};
+
 export const reducer = combineReducers({
   blogs: blogReducer,
   notification: notificationReducer,
+  user: userReducer
 });

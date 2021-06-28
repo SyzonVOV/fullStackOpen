@@ -21,9 +21,9 @@ const Notification = () => {
   return (
     notification && (
       <div className={classes.root}>
-        <Alert severity="success">
+        <Alert severity={notification.type}>
           <AlertTitle>Add new blog!</AlertTitle>
-          {notification}
+          {notification.message}
         </Alert>
       </div>
     )

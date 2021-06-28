@@ -46,5 +46,17 @@
       "votes": 0,
       "id": 8
     }
+  ],
+  "users": [
+    {
+      "name": "Volodymyr Syzonenko",
+      "nickname": "Syzon",
+      "password": "1989"
+    },
+    {
+      "name": "Volodymyr Syzonenko",
+      "nickname": "Mudie",
+      "password": "1989"
+    }
   ]
 }

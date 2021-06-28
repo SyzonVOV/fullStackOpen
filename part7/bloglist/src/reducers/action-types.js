@@ -5,3 +5,5 @@ export const SHOW_NOTIF = 'notification/SHOW_NOTIF';
 export const HIDE_NOTIF = 'notification/HIDE_NOTIF'; 
 export const DEL_TIMER = 'notification/DEL_TIMER'; 
 export const INIT_TIMER = 'notification/INIT_TIMER'; 
+export const USER_LOGIN = 'user/USER_LOGIN'; 
+export const SET_USER = 'user/SET_USER'; 

@@ -19,12 +19,14 @@ export default function NewBlogForm() {
   const dispatch = useDispatch();
   const title = useField('title');
   const author = useField('author');
+  const url = useField('url');
   // const classes = useStyles();
   const handleOnSubmit = event => {
     event.preventDefault();
-    const content = { title: title.value, author: author.value };
+    const content = { title: title.value, author: author.value, url: url.value };
     title.onChange();
     author.onChange();
+    url.onChange();
     dispatch(addBlogThunk(content));
   };
 
@@ -36,6 +38,9 @@ export default function NewBlogForm() {
       </div>
       <div>
         <TextField id="author" label="Author" fullWidth {...author} />
+      </div>
+      <div>
+        <TextField id="url" label="Url" fullWidth {...url} />
       </div>
       <div>
         <Button variant="contained" color="primary" type="submit">

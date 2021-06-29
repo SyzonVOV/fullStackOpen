@@ -1,4 +1,4 @@
-import { Gender, NewPatientsEntry } from '../types';
+import { Gender, NewPatientsEntry, Entry } from '../types';
 
 
 const toNewPatientEntry = (data: { [key: string]: unknown }): NewPatientsEntry => {
@@ -7,10 +7,19 @@ const toNewPatientEntry = (data: { [key: string]: unknown }): NewPatientsEntry =
     dateOfBirth: parseDate(data.dateOfBirth),
     gender: parseGender(data.gender),
     ssn: parseString(data.ssn),
+    entries: parseEntry(data.entries),
     occupation: parseString(data.occupation)
   };
 
   return newEntry;
+};
+
+const parseEntry = (entries: unknown): Entry[] => {
+  if (!entries || !Array.isArray(entries)) {
+    throw new Error('Incorrect or missing comment');
+  }
+
+  return entries as Entry[];
 };
 
 const parseString = (comment: unknown): string => {
